@@ -60,7 +60,7 @@ function buildDoc(name) {
     new Paragraph({ children: [new TextRun({ text: $('subject').value, bold: true, underline: {} })], alignment: AlignmentType.CENTER, spacing: sp }),
     ...$('body').value.split(/\n\s*\n/).filter(p => p.trim()).map(p =>
       new Paragraph({ children: [new TextRun(p.trim())], alignment: AlignmentType.JUSTIFIED, spacing: sp })),
-    new Paragraph({ children: [new TextRun($('sign').value)], spacing: { before: 300 } }),
+    new Paragraph({ children: $('sign').value.split(/\r?\n/).map((l, i) => new TextRun({ text: l, break: i ? 1 : 0 })), spacing: { before: 300 } }),
   ];
   return new Document({ sections: [{ children: paras }] });
 }
@@ -91,3 +91,10 @@ drop.ondragover = e => { e.preventDefault(); drop.classList.add('over'); };
 drop.ondragleave = () => drop.classList.remove('over');
 drop.ondrop = e => { e.preventDefault(); drop.classList.remove('over'); loadFile(e.dataTransfer.files[0]); };
 $('go').onclick = generate;
+$('sign').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && e.ctrlKey) {
+    e.preventDefault();
+    const t = e.target, s = t.selectionStart;
+    t.setRangeText('\n', s, t.selectionEnd, 'end');
+  }
+});
