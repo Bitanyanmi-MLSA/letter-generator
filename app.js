@@ -57,7 +57,7 @@ function buildDoc(name) {
   const paras = [
     new Paragraph({ children: [new TextRun({ text: new Date().toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }) })], spacing: sp }),
     new Paragraph({ children: [new TextRun({ text: `Dear ${name},` })], spacing: sp }),
-    new Paragraph({ children: [new TextRun({ text: $('subject').value, bold: true })], spacing: sp }),
+    new Paragraph({ children: [new TextRun({ text: $('subject').value, bold: true, underline: {} })], alignment: AlignmentType.CENTER, spacing: sp }),
     ...$('body').value.split(/\n\s*\n/).filter(p => p.trim()).map(p =>
       new Paragraph({ children: [new TextRun(p.trim())], alignment: AlignmentType.JUSTIFIED, spacing: sp })),
     new Paragraph({ children: [new TextRun($('sign').value)], spacing: { before: 300 } }),
