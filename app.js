@@ -54,7 +54,9 @@ async function loadFile(f) {
 function buildDoc(name) {
   const { Document, Paragraph, TextRun, AlignmentType } = docx;
   const sp = { after: 200 };
+  const addr = $('addr').value.trim();
   const paras = [
+    ...(addr ? [new Paragraph({ children: addr.split(/\r?\n/).map((l, i) => new TextRun({ text: l, break: i ? 1 : 0 })), alignment: AlignmentType.RIGHT, spacing: sp })] : []),
     new Paragraph({ children: [new TextRun({ text: new Date().toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }) })], spacing: sp }),
     new Paragraph({ children: [new TextRun({ text: `Dear ${name},` })], spacing: sp }),
     new Paragraph({ children: [new TextRun({ text: $('subject').value, bold: true, underline: {} })], alignment: AlignmentType.CENTER, spacing: sp }),
@@ -91,10 +93,10 @@ drop.ondragover = e => { e.preventDefault(); drop.classList.add('over'); };
 drop.ondragleave = () => drop.classList.remove('over');
 drop.ondrop = e => { e.preventDefault(); drop.classList.remove('over'); loadFile(e.dataTransfer.files[0]); };
 $('go').onclick = generate;
-$('sign').addEventListener('keydown', e => {
+['sign', 'addr'].forEach(id => $(id).addEventListener('keydown', e => {
   if (e.key === 'Enter' && e.ctrlKey) {
     e.preventDefault();
-    const t = e.target, s = t.selectionStart;
-    t.setRangeText('\n', s, t.selectionEnd, 'end');
+    const t = e.target;
+    t.setRangeText('\n', t.selectionStart, t.selectionEnd, 'end');
   }
-});
+}));
